@@ -13,11 +13,13 @@ const render = require("./src/page-template.js");
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
-// set up files, npm init -y, npm i inquirer@6.3.1, npm i jest, added jest to test line in package-json, npm run test, created .gitignore and added node_modules & **/.DS_Store.   DONE
+// set up files, npm init -y, npm i inquirer@6.3.1, npm i jest, added jest to test line in package-json, npm run test, created .gitignore and added node_modules & **/.DS_Store.   DONE 
+
+// ISSUE node_modules has been pushed to repo, how do I correct this?
 
 // create employee class in lib file   DONE NOT WORKING
 // create engineer, intern and manager sub-classes in lib files   DONE NOT WORKING
-// classes above need to pass the tests in __tests__ files   DONE NOT WORKING
+// classes above need to pass the tests in __tests__ files   NOT WORKING
 
 // create the inquirer prompt to ask for manager info
 // create the inquirer flow so it will ask different questions (inquirer prompts) based on user choice
@@ -25,7 +27,10 @@ const render = require("./src/page-template.js");
 
 
 // need to check and make sure the name field matches with the class object properties and the 
-const questions = [
+
+const team = []
+
+const managerQuestions = [
     {
         type: "input",
         name: "name",
@@ -46,12 +51,9 @@ const questions = [
         name: "officeNumber",
         message: "What is the team managers office number?"
     },
-    {
-        type: "list",   // this user choice will either re-loop questions or end questions.
-        name: "",       //need to select name
-        message: "What type of team member would you like to add?",
-        choices: ["Engineer", "Intern", "none"],
-    },
+];
+
+const engineerQuestions = [
     {
         type: "input",
         name: "name",
@@ -69,9 +71,12 @@ const questions = [
     },
     {
         type: "input",
-        name: "GitHub",
+        name: "github",
         message: "What is your engineers GitHub username?"
     },
+];
+
+const internQuestions = [
     {
         type: "input",
         name: "name",
@@ -92,27 +97,69 @@ const questions = [
         name: "school",
         message: "What is your interns school?"
     },
+]
+
+const menuQuestion = [
+    {
+        type: "list",   // this user choice will either re-loop questions or end questions.
+        name: "selectRole",       //need to select name
+        message: "What type of team member would you like to add?",
+        choices: ["Engineer", "Intern", "none"],
+    },
+
+
 ];
 
-// example below of recursive question, need to adapt this to link to the list question above
-// function ask() {
-//     inquirer.prompt(questions).then((answers) => {
-//       output.push(answers.tvShow);
-//       if (answers.askAgain) {
-//         ask();
-//       } else {
-//         console.log('Your favorite TV Shows:', output.join(', '));
-//       }
-//     });
-//   }
+function askMenu() {
+    inquirer.prompt(menuQuestion).then((answer) => {
+        console.log(answer);
+        if (answer.selectRole === 'Engineer') {
+            askEngineer();
+        } else if (answer.selectRole === 'Intern') {
+            askIntern();
+        } else {
+            writeToFile(outputPath, render(team))
+        }
+    });
+}
 
+// example below of recursive question, need to adapt this to link to the list question above
+function askManager() {
+    inquirer.prompt(managerQuestions).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
+        team.push(manager)
+        console.log(manager);
+        askMenu()
+    });
+}
+
+askManager()
+
+
+function askEngineer() {
+    inquirer.prompt(engineerQuestions).then((answers) => {
+        console.log(answers);
+        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+        team.push(engineer)
+        askMenu()
+    });
+}
+
+function askIntern() {
+    inquirer.prompt(internQuestions).then((answers) => {
+        console.log(answers);
+        const intern = new Intern(answers.name, answers.id, answers.email, answers.school)
+        team.push(intern)
+        askMenu()
+    });
+}
 
 // code taken from README-Generator, will need adapting
 
 // function to write README file
-// function writeToFile(fileName, data) {
-//     fs.writeFileSync(fileName, data)
-// }
+function writeToFile(fileName, data) {
+    fs.writeFileSync(fileName, data)
+}
 
 // function to initialize program
 // function init() {
