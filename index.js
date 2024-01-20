@@ -13,23 +13,20 @@ const render = require("./src/page-template.js");
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
-// set up files, npm init -y, npm i inquirer@6.3.1, npm i jest, added jest to test line in package-json, npm run test, created .gitignore and added node_modules & **/.DS_Store.   DONE 
-
-// ISSUE node_modules has been pushed to repo, how do I correct this?
-
-// create employee class in lib file   DONE NOT WORKING
-// create engineer, intern and manager sub-classes in lib files   DONE NOT WORKING
-// classes above need to pass the tests in __tests__ files   NOT WORKING
-
+// set up files, npm init -y, npm i inquirer@6.3.1, npm i jest, added jest to test line in package-json, npm run test, created .gitignore and added node_modules & **/.DS_Store. 
+// create employee class in lib file   
+// create engineer, intern and manager sub-classes in lib files   
+// classes above need to pass the tests in __tests__ files   
 // create the inquirer prompt to ask for manager info
 // create the inquirer flow so it will ask different questions (inquirer prompts) based on user choice
 // write html result to file
 
 
-// need to check and make sure the name field matches with the class object properties and the 
 
+// create array for team info
 const team = []
 
+// opening questions, subject manager
 const managerQuestions = [
     {
         type: "input",
@@ -53,6 +50,7 @@ const managerQuestions = [
     },
 ];
 
+// questions subject engineeer
 const engineerQuestions = [
     {
         type: "input",
@@ -76,6 +74,7 @@ const engineerQuestions = [
     },
 ];
 
+// questions subject intern
 const internQuestions = [
     {
         type: "input",
@@ -99,10 +98,11 @@ const internQuestions = [
     },
 ]
 
+// menu question, user decides whether to add an engineeer, an intern, or to end function
 const menuQuestion = [
     {
         type: "list",   // this user choice will either re-loop questions or end questions.
-        name: "selectRole",       //need to select name
+        name: "selectRole",      
         message: "What type of team member would you like to add?",
         choices: ["Engineer", "Intern", "none"],
     },
@@ -110,6 +110,7 @@ const menuQuestion = [
 
 ];
 
+// function to ask the menu question, depending on user choice will call the functions to ask the engineer or intern questions, or end the program
 function askMenu() {
     inquirer.prompt(menuQuestion).then((answer) => {
         console.log(answer);
@@ -123,7 +124,7 @@ function askMenu() {
     });
 }
 
-// example below of recursive question, need to adapt this to link to the list question above
+// function to ask the manager question, will then call the menu question inquirer will open with this
 function askManager() {
     inquirer.prompt(managerQuestions).then((answers) => {
         const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber)
@@ -133,9 +134,11 @@ function askManager() {
     });
 }
 
+// calls the ask manager function
 askManager()
 
 
+// funtion to ask the engineer questions, then calls the menu question
 function askEngineer() {
     inquirer.prompt(engineerQuestions).then((answers) => {
         console.log(answers);
@@ -145,6 +148,7 @@ function askEngineer() {
     });
 }
 
+// funtion to ask the intern questions, then calls the menu question
 function askIntern() {
     inquirer.prompt(internQuestions).then((answers) => {
         console.log(answers);
@@ -154,24 +158,8 @@ function askIntern() {
     });
 }
 
-// code taken from README-Generator, will need adapting
 
 // function to write README file
 function writeToFile(fileName, data) {
     fs.writeFileSync(fileName, data)
 }
-
-// function to initialize program
-// function init() {
-//     inquirer
-//         .prompt(questions)
-//         .then((answers) => {
-//             console.log(answers);
-//             const readMeContent = generateMarkdown(answers);
-//             //write to file
-//             writeToFile('./output/README.md', readMeContent)
-//         })
-// }
-
-// function call to initialize program
-// init();
